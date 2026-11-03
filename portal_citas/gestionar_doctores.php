@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . "./AccesoDatos.php";
+require_once __DIR__ . "/AccesoDatos.php";
 
 
 // PASO A: Iniciar o reanudar la sesión (OBLIGATORIO al principio)
