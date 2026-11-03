@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sim Forest</title>
+    <link rel="stylesheet" href="estilos.css">
+    <script src="script/script.js" defer></script></head>
+<body>
+    <div id="cabezera">
+        <div id="Bienvenidos">
+
+            <h1>Sim Forest</h1>
+            <p>Bienvenidos a Sim Forest</p>
+
+        </div>
+
+        <div id="panel-simulador">
+            <div id="tablero">
+                
+            </div>
+
+            <div id="barra_control">
+
+            </div>
+
+            <div id="panel_estadisticas">
+
+            </div>
+        </div>
+        
+    </div>
+
+    <div id="panel-configurador">
+        <h2>Configuracion</h2>
+
+        <span>Anchura del bosque M:</span>
+        <div> 
+            <input type="number" id="spin_anchura_bosque" min="1" max="30" value="5"
+            placeholder="M (Anchura del bosque)">
+        </div>
+        <br>
+        <span>Altura del bosque N:</span>
+        <div>
+            <input type="number" id="spin_altura_bosque" min="1" max="30" value="5"
+            placeholder="N (Altura del bosque)">
+        </div>
+        <br>
+        <span>Probabilidad de nacimiento de árbol</span>
+        <div>
+            <input type="number" id="spin_probabilidad_arbol" min="0" max="1" step="0.01" value="0.5"
+            placeholder="P (Probabilidad crear arbol)">
+        </div>
+        <br>
+        <span>Probabilidad incendio</span>
+        <div>
+            <input type="number" id="spin_probabilidad_incendio" min="0" max="1" step="0.01" value="0.5"
+            placeholder="Q (Probabilidad incendio)">
+        </div>
+
+        <button id="btn_tabla">Iniciarr</button>
+
+    </div>
+
+    <div id="panel-controles">
+        <button id="btn-atrasar" title="Atrasar">⏪</button>
+        <button id="btn-parar" title="Parar">&#9632;</button>
+        <button id="btn-seguir" title="Seguir">&#9658;</button>
+        <button id="btn-adelantar" title="Adelantar">&#9193;</button>
+    </div>
+</body>
+</html>

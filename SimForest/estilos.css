@@ -1,0 +1,145 @@
+/* Reset básico */
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+/* Configuración del Fondo y Centrado Principal */
+body {
+    /* Fondo optimizado */
+    background-image: url('foto fondo.jpg'); /* Verifica que la ruta o nombre sea correcto */
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+
+    /* Centrado horizontal y vertical */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: white;
+    padding: 20px;
+}
+
+/* Encabezado */
+#Bienvenidos {
+    color: #ffffff;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8); /* Sombra para resaltar texto blanco sobre fondo variable */
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#Bienvenidos h1 {
+    margin: 0 0 5px 0;
+    font-size: 2.5rem;
+}
+
+/* Panel de Configuración Centrado y Estilizado */
+#panel-configurador {
+    background-color: rgba(0, 0, 0, 0.7); /* Fondo oscuro semitransparente para ver mejor las letras */
+    backdrop-filter: blur(5px); /* Efecto cristal para difuminar levemente el fondo detras del panel */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 25px 30px;
+    width: 100%;
+    max-width: 380px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+#panel-configurador h2 {
+    margin-top: 0;
+    text-align: center;
+    color: #4caf50;
+}
+
+#panel-configurador span {
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+#panel-configurador input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: rgba(188, 182, 182, 0.9);
+    font-size: 0.95rem;
+}
+
+/* Botón Iniciar */
+#btn_tabla {
+    margin-top: 15px;
+    padding: 12px;
+    background-color: #2e8b57;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+#btn_tabla:hover {
+    background-color: #246b43;
+}
+
+/* Controles */
+#panel-controles {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+#panel-controles button {
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: none;
+    background-color: rgba(255, 255, 255, 0.85);
+    cursor: pointer;
+    transition: transform 0.1s ease;
+}
+
+#panel-controles button:hover {
+    transform: scale(1.05);
+    background-color: #ffffff;
+}
+
+/* Asegura que el tablero tenga espacio y visibilidad cuando aparezca */
+#tablero {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 15px 0;
+}
+
+/* Estilo correcto para la tabla del simulador */
+table.tablero, #tablero table {
+    border-collapse: collapse;
+    margin: 0 auto;
+}
+
+#tablero td {
+    border: 1px solid #000;
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+    min-height: 30px;
+}
+
+/* Tablero y Celdas */
+.vacio { background-color: #ffffff; }
+.arbol { background-color: #2e8b57; }
+.fuego { background-color: #ff4500; }

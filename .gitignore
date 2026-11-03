@@ -1,0 +1,40 @@
+# Dependencias
+node_modules/
+vendor/
+bower_components/
+
+# Entorno y secretos
+.env
+.env.*
+!.env.example
+portal_citas/AccesoDatos.php
+*.key
+*.pem
+*.p12
+*.pfx
+
+# Build y salidas
+dist/
+build/
+out/
+target/
+
+# Logs y temporales
+*.log
+logs/
+tmp/
+temp/
+*.tmp
+*.bak
+*.swp
+*~
+
+# Sistema y editores
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# Cache
+.cache/
