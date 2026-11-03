@@ -140,6 +140,6 @@ table.tablero, #tablero table {
 }
 
 /* Tablero y Celdas */
-.infertil { background-color: #000000; }
+.infertil { background-color: #864141; }
 .arbol { background-color: #2e8b57; }
 .fuego { background-color: #ff4500; }
