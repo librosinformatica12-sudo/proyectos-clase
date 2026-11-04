@@ -9,6 +9,20 @@ session_start();
 // PASO B: Inicializar el array de doctores 'lista_doctores' en la sesión si no existe aún
 if (!isset($_SESSION["lista_doctores"])) {
     $_SESSION["lista_doctores"] = array();
+
+    $doctoresExistentes = PA_ListaDoctores();
+
+    if (is_array($doctoresExistentes)) {
+        // leo de la base de datos los doctores que ya existan y los meto en sesión
+        foreach ($doctoresExistentes as $indice => $doctor) {
+            $nuevo_doctor = [];
+            $nuevo_doctor["licencia_doctor"] = $doctor["id"];
+            $nuevo_doctor["nombre_doctor"] = $doctor["nombre"];
+            $nuevo_doctor["apellido_doctor"] = $doctor["apellido"];
+
+            $_SESSION["lista_doctores"][] = $nuevo_doctor;
+        }
+    }
 }
 
 // PASO D: Si se recibe una nueva alta de doctor se procesa
@@ -16,41 +30,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // 1. Capturamos los datos que viajan en el POST
     if (isset($_POST["licencia_doctor"], $_POST["nombre_doctor"], $_POST["apellido_doctor"])) {
-        $nuevo_doctor = [];
-            $nuevo_doctor["licencia_doctor"] = $_POST["licencia_doctor"];
-            $nuevo_doctor["nombre_doctor"] = $_POST["nombre_doctor"];
-            $nuevo_doctor["apellido_doctor"] = $_POST["apellido_doctor"];
 
-        // 2. Acumulamos la nueva cita dentro del array guardado en la SESIÓN
-        $_SESSION["lista_doctores"][] = $nuevo_doctor;
-
-
-        // 3. Mandar a base de datos el nuevo doctor
-        $resultado = PA_AltaDoctor(
+        // 2. primero llamamos a la base de datos / función y guardamos el resultado
+        $resultado = pa_altadoctor(
             $_POST["licencia_doctor"],
             $_POST["nombre_doctor"],
             $_POST["apellido_doctor"]
         );
 
-        if($resultado === -1){
+        // 3. evaluamos el código que nos devolvió el resultado
+        if ($resultado === -1) {
+            $mensaje = "nombre vacio.";
+        } 
+        else if ($resultado === -2) {
+            $mensaje = "apellido vacio.";
+        } 
+        else if ($resultado === -3) {
+            $mensaje = "licencia vacia.";
+        } 
+        else {
+            // 4. si todo está bien (no entró en ningún error), 
+            // acumulamos el doctor en la sesión y ponemos el mensaje de éxito
+            $nuevo_doctor = [
+                "licencia_doctor" => $_POST["licencia_doctor"],
+                "nombre_doctor" => $_POST["nombre_doctor"],
+                "apellido_doctor" => $_POST["apellido_doctor"]
+            ];
+            $_SESSION["lista_doctores"][] = $nuevo_doctor;
 
-        $mensaje = "Nombre vacio.";
-
+            $mensaje = "doctor dado de alta correctamente.";
         }
-        else if ($resultado === -2)
-        {
-        $mensaje = "Apellido vacio.";
-
-        }
-        else if($resultado === -3){
-
-        $mensaje = "Licencia vacia.";
-
-        }
-        else{
-            $mensaje = "Doctor dado de alta correctamente.";
-        }
-
     }
 }
 

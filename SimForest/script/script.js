@@ -18,7 +18,9 @@ const btn_seguir = document.getElementById("btn-seguir");
 const btn_adelantar = document.getElementById("btn-adelantar");
 
 
-// Variable Modelo
+
+
+// Variable Modelos
 
 let M;
 let N;
@@ -27,10 +29,11 @@ let Q;
 
 // Constantes del modelo
 const INFERTIL = 0;
-const ARBOL = 1;
-const FUEGO = 2;
+const FERTIL = 1
+const ARBOL = 2;
+const FUEGO = 3;
 
-const CLASES = ["infertil", "arbol", "fuego"];
+const CLASES = ["infertil", "fertil", "arbol", "fuego"];
 
 let bosque;
 
@@ -43,15 +46,19 @@ function pintarTablero(){
     // Limpiamos el tablero por si se pulsa "Iniciar" más de una vez
     tableroDIV.innerHTML = "";
 
-    let tablaDOM = document.createElement("table");
-    tablaDOM.setAttribute("class", "tablero");
+    let tablaDOM = document.createElement("div");
+    tablaDOM.className = "tablero";
 
     for(let i = 0; i < N; i++){
-        let filaDOM = document.createElement("tr");
+        let filaDOM = document.createElement("div");
+        filaDOM.className = "fila";
         for(let j = 0; j < M; j++){
-            let celdaDOM = document.createElement("td");
-            celdaDOM.setAttribute("class", CLASES[bosque[i][j]]);
+            let celdaDOM = document.createElement("div");
+            celdaDOM.className = "celda " + CLASES[bosque[i][j]];
             filaDOM.appendChild(celdaDOM);
+
+            // if(bosuqe[i][j] == 0)
+            //     celda
         }
         tablaDOM.appendChild(filaDOM);
     }
@@ -87,28 +94,54 @@ function prepararTablero() {
 
 function avanzar1(){
     for(let i; i < M; i++){
-        for(let j; j < N; j++){
+        for(let j= 0; j < N; j++){
 
-            // si el estado es fertil
+            // si el estado = fertil
+            if(bosque[i][j] == j)
                 // calculo la probabilidad (p) de nacimiento de arbol
-                // bosque[i][j] =
-                rand(0,1)
-            // sino si el estado = arbol
-                // calcular probabilidad (Q) de combustion
-                // bosque[i][j] = 
-            // sino si el estado = interfil
-                //bosque[i][j]= fertil
-            // sino si el estado = fuego
-                // bosque[i][j]= infertil
+                if(Math.random(0,1) <= P)
+                {
+                    bosque_futuro[i][j] = 2;
+                }
+                else{
+                    bosque_futuro[i][j] = 1;
+
+                }
+            if(bosque[i][j] == 2){
+                bosque_futuro[i][j] = ARBOL;
+                // propagcion del fuego
+                if (i +1 < M && bosque[i+1][j] == 3);
+                    bosque_futuro[i][j] = 3;
+                if (i +1 < N &&bosque[i+1][j] == 3);
+                    bosque_futuro[i][j] = 3;                
+                if (i +1 < M &&bosque[i+1][j] == 3);
+                    bosque_futuro[i][j] = 3;   
+                if (i +1 < N && bosque[i][j+1] == 3)
+                    bosque_futuro[i][j] = 3;             
+
+                // calcular probabildad Q de combustible
+                if(Math.random() <= Q)
+                    bosque_futuro[i][j] = 3
+            }
+            if(bosque[i][j] == 0)
+                bosque_futuro[i][j] = 1;
+            if(bosque[i][j] == 3)
+                bosque_futuro[i][j] = 0;
         }
     }
-    // machacar el bosque actual con los resultados del bosque futuro
-    // bosque actual <---- bosque_futuro
+
+    for(let i = 0; i < M; j++){
+        for(let j = 0;j < N; j++){
+            bosque[i][j] = bosque_futuro[i][j];
+        }
+    }
     t++;
 
 
     tableroDIV.removeChild(tableroDOM);
-    // pintarTablero()
+    pintarTablero();
 
 }
+
 btn_iniciar.addEventListener("click", prepararTablero);
+btn_adelantar.addEventListener("click", avanzar1);

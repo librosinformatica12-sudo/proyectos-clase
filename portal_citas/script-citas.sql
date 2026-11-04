@@ -33,11 +33,11 @@ drop procedure AltaCita;
 
 -- Procedure crear
 delimiter //
-create procedure AltaCita (
+create procedure AltaDoctor (
 	in n_licencia varchar(50),
     in _nombre_doctor varchar(50),
     in _apellido_doctor varchar(20),
-    on _res int
+	out _res int
 )
 
 begin
@@ -54,18 +54,53 @@ begin
 	else
     -- caso 0
     -- instruccio nuclear
-    insert into doctores(n_licencia,nombre_doctor,apellidos_doctor)
+    insert into doctores(n_licencia, nombre_doctor, apellidos_doctor)
 		values ();
+        
+	end if;
 end $$
 delimiter ;
 
 
 
+DELIMITER //
+
+CREATE PROCEDURE ListaDoctores ()
+BEGIN
+    -- caso 0
+    -- instruccion nuclear
+    SELECT * FROM doctores;
+END //
+
+DELIMITER ;
+
+delimiter //
+
+create procedure listadoctores ()
+begin
+    -- caso 0
+    -- instruccion nuclear
+    select * from doctores;
+end //
+
+delimiter ;
+
+delimiter //
+
+create procedure damedoctor (in _n_licencia int)
+begin
+    -- caso 0
+    -- instruccion nuclear
+    select * from doctores where n_licencia = _n_licencia;
+end //
+
+delimiter ;
+
 
 
 -- Procedure crear
 delimiter //
-create procedure AltaCita (in _nombre_paciente  varchar(50), in _especialidad varchar(20), in _fecha datetime, on _res int)
+create procedure AltaCita (in _nombre_paciente  varchar(50), in _especialidad varchar(20), in _fecha datetime, in fk_doctor on _res int)
 
 begin
 
@@ -84,7 +119,7 @@ begin
     else
     -- caso 0
     -- instruccio nuclear
-    insert into citasMedias(nombre_paciente,especialidad,fecha)
-		values (_nombre_paciente, _especialidad, _fecha);
+    insert into citasMedias(nombre_paciente,especialidad,fecha,fk_doctor)
+		values (_nombre_paciente, _especialidad, _fecha,_fk_doctor);
 end $$
 delimiter ;

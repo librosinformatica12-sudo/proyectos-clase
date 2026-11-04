@@ -1,11 +1,25 @@
 <?php
 
+require_once __DIR__ . "/AccesoDatos.php";
+
 // PASO A: Iniciar o reanudar la sesión (OBLIGATORIO al principio)
 session_start();
 
 // PASO B: Inicializar el array de citas 'lista_citas'en la sesión si no existe aún
 if (!isset($_SESSION["lista_citas"])) {
     $_SESSION["lista_citas"] = array();
+}
+
+// PASOB2: Averiguar si existe el doctor
+if (isset($_POST["doctor_asignado"])) {
+    $licenciaBuscar = (int)$_POST["doctor_asignado"];
+    $doctorEncontrado = PA_DameDoctor($licenciaBuscar);
+
+    if (count($doctorEncontrado) === 0) {
+        $mensaje = "Doctor no encontrado. Prueba otro numero de licencia";
+        header("Location: portal_citas.html");
+        exit;
+    }
 }
 
 // PASO C: Comprobar si se ha solicitado borrar todas las citas
@@ -31,6 +45,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // 2. Acumulamos la nueva cita dentro del array guardado en la SESIÓN
         $_SESSION["lista_citas"][] = $nueva_cita;
+
+                // 3. Mandar a base de datos el nuevo doctor
+        $resultado = PA_AltaDoctor(
+            $_POST["licencia_doctor"],
+            $_POST["nombre_doctor"],
+            $_POST["apellido_doctor"]
+        );
+
+        if($resultado === -1){
+
+        $mensaje = "Nombre vacio.";
+
+        }
+        else if ($resultado === -2)
+        {
+        $mensaje = "Especialidad vacia.";
+
+        }
+        else if($resultado === -3){
+
+        $mensaje = "Fecha vacia.";
+
+        }
+        else if($resultado === -4){
+
+        $mensaje = "Fecha anterior al presente.";
+
+        }
+        else{
+            $mensaje = "Cita insertada con exito.";
+        }
     }
 }
 
