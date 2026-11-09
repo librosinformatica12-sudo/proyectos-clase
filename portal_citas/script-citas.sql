@@ -1,125 +1,150 @@
--- SCRIPT DE GENERACION DE BBDD EN MYSQL
-create database if not exists Clinica;
-use Clinica;
+-- ============================================================
+-- script de generacion de la base de datos "clinica"
+-- gestor de citas medicas - acceso a datos
+-- ============================================================
 
--- drops
+create database if not exists clinica
+    default character set utf8mb4
+    collate utf8mb4_0900_ai_ci;
 
-drop table if exists citasMedicas;
+use clinica;
+
+set names utf8mb4;
+
+-- ------------------------------------------------------------
+-- borrado previo (primero las citas por la clave foranea)
+-- ------------------------------------------------------------
+drop table if exists citasmedias;
 drop table if exists doctores;
 
+drop procedure if exists altadoctor;
+drop procedure if exists listadoctores;
+drop procedure if exists damedoctor;
+drop procedure if exists altacita;
+drop procedure if exists listacitas;
+drop procedure if exists modificarcita;
+
+-- ------------------------------------------------------------
 -- tablas
-create table doctores(
-	n_licencia int primary key,
+-- ------------------------------------------------------------
+create table doctores (
+    n_licencia int primary key,
     nombre_doctor varchar(50) not null,
     apellido_doctor varchar(50) not null
-    
-);
+) engine=innodb default charset=utf8mb4 collate=utf8mb4_0900_ai_ci;
 
-
-create table citasMedias(
-	id_cita int primary key auto_increment,
+create table citasmedias (
+    id_cita int primary key auto_increment,
     nombre_paciente varchar(50) not null,
-    especialidad enum("Medicina General","Pediatría","Dermatología","Traumatología"),
-	fecha datetime,
+    especialidad enum('medicina general', 'pediatría', 'dermatología', 'traumatología')
+        character set utf8mb4 collate utf8mb4_0900_ai_ci default null,
+    fecha datetime default null,
     fk_doctor int not null,
-    foreign key (fk_doctor) references doctores(n_licencia)
-);
+    constraint fk_citas_doctor foreign key (fk_doctor) references doctores (n_licencia)
+) engine=innodb default charset=utf8mb4 collate=utf8mb4_0900_ai_ci;
 
--- alter table citasMedicas add column(fk_doctor int not null);
--- alter table citasMedicas add constraint foreign foreing key (fk_doctor)
-
--- Procedure borrar
-drop procedure AltaCita;
-
--- Procedure crear
+-- ------------------------------------------------------------
+-- procedimientos de doctores
+-- ------------------------------------------------------------
 delimiter //
-create procedure AltaDoctor (
-	in n_licencia varchar(50),
+
+create procedure altadoctor (
+    in _n_licencia varchar(50),
     in _nombre_doctor varchar(50),
-    in _apellido_doctor varchar(20),
-	out _res int
+    in _apellido_doctor varchar(50),
+    out _res int
 )
-
 begin
-
-	-- caso 1 - si no hay nombre doctor
-    if(_nombre_doctor like "" or _nombre_doctor is null) then
-		set _res = -1;
-    -- caso 2 - si no hay apellido
-    elseif(_apellido_doctor like "" or _apellido_doctor is null) then
-		set _res = -2;
-    -- caso 3 - licencia igual error
-    elseif(select n_licencia from where n_licencia like _n_licencia is not null then
-		set _res = -3;
-	else
-    -- caso 0
-    -- instruccio nuclear
-    insert into doctores(n_licencia, nombre_doctor, apellidos_doctor)
-		values ();
-        
-	end if;
-end $$
-delimiter ;
-
-
-
-DELIMITER //
-
-CREATE PROCEDURE ListaDoctores ()
-BEGIN
-    -- caso 0
-    -- instruccion nuclear
-    SELECT * FROM doctores;
-END //
-
-DELIMITER ;
-
-delimiter //
+    if (_nombre_doctor is null or trim(_nombre_doctor) = '') then
+        set _res = -1;
+    elseif (_apellido_doctor is null or trim(_apellido_doctor) = '') then
+        set _res = -2;
+    elseif (_n_licencia is null or trim(_n_licencia) = '') then
+        set _res = -3;
+    elseif exists (select 1 from doctores where n_licencia = _n_licencia) then
+        set _res = -4;
+    else
+        insert into doctores (n_licencia, nombre_doctor, apellido_doctor)
+        values (_n_licencia, _nombre_doctor, _apellido_doctor);
+        set _res = 0;
+    end if;
+end //
 
 create procedure listadoctores ()
 begin
-    -- caso 0
-    -- instruccion nuclear
-    select * from doctores;
+    select n_licencia, nombre_doctor, apellido_doctor
+    from doctores
+    order by n_licencia;
 end //
-
-delimiter ;
-
-delimiter //
 
 create procedure damedoctor (in _n_licencia int)
 begin
-    -- caso 0
-    -- instruccion nuclear
-    select * from doctores where n_licencia = _n_licencia;
+    select n_licencia, nombre_doctor, apellido_doctor
+    from doctores
+    where n_licencia = _n_licencia;
 end //
 
-delimiter ;
-
-
-
--- Procedure crear
-delimiter //
-create procedure AltaCita (in _nombre_paciente  varchar(50), in _especialidad varchar(20), in _fecha datetime, in fk_doctor on _res int)
-
+-- ------------------------------------------------------------
+-- procedimientos de citas
+-- ------------------------------------------------------------
+create procedure altacita (
+    in _nombre_paciente varchar(50),
+    in _especialidad varchar(20),
+    in _fecha datetime,
+    in _doctor_asignado int,
+    out _res int
+)
 begin
-
-	-- caso 1 - Nombre vacio
-    if(_nombre_paciente like "" or _nombre_paciente is null) then
-		set _res = -1;
-    -- caso 2 - Especialidad vacia
-    elseif(_especialidad like "" or _especialidad is null) then
-		set _res = -2;
-    -- caso 3 - Fecha vacia
-    elseif(_fecha is null or _fecha like "") then
-		set _res = -3;
-    -- caso 4 - Fecha anterior al presente
-	elseif(_fecha <= now()) then
-		set _res = -4;
+    if (_nombre_paciente is null or trim(_nombre_paciente) = '') then
+        set _res = -1;
+    elseif (_especialidad is null or trim(_especialidad) = '') then
+        set _res = -2;
+    elseif (_fecha is null) then
+        set _res = -3;
+    elseif (_fecha <= now()) then
+        set _res = -4;
+    elseif not exists (select 1 from doctores where n_licencia = _doctor_asignado) then
+        set _res = -5;
     else
-    -- caso 0
-    -- instruccio nuclear
-    insert into citasMedias(nombre_paciente,especialidad,fecha,fk_doctor)
-		values (_nombre_paciente, _especialidad, _fecha,_fk_doctor);
-end $$
+        insert into citasmedias (nombre_paciente, especialidad, fecha, fk_doctor)
+        values (_nombre_paciente, _especialidad, _fecha, _doctor_asignado);
+        set _res = 0;
+    end if;
+end //
+
+create procedure listacitas ()
+begin
+    select id_cita, nombre_paciente, especialidad, fecha, fk_doctor
+    from citasmedias
+    order by fecha;
+end //
+
+create procedure modificarcita (
+    in _id_cita int,
+    in _nombre_paciente varchar(50),
+    in _especialidad varchar(20),
+    in _fecha datetime,
+    in _doctor_asignado int,
+    out _res int
+)
+begin
+    if (_nombre_paciente is null or trim(_nombre_paciente) = '') then
+        set _res = -1;
+    elseif (_especialidad is null or trim(_especialidad) = '') then
+        set _res = -2;
+    elseif (_fecha is null) then
+        set _res = -3;
+    elseif (_fecha <= now()) then
+        set _res = -4;
+    else
+        update citasmedias
+        set nombre_paciente = _nombre_paciente,
+            especialidad = _especialidad,
+            fecha = _fecha,
+            fk_doctor = _doctor_asignado
+        where id_cita = _id_cita;
+        set _res = 0;
+    end if;
+end //
+
 delimiter ;

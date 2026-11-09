@@ -25,19 +25,14 @@
 
         <!-- apellido del doctor -->
         <label for="apellido_doctor">Apellido del Doctor:</label>
-        <input type="text" id="apellido_doctor" name="apellido_doctor" maxlength="50">
+        <input type="text" id="apellido_doctor" name="apellido_doctor" maxlength="50"><br>
 
-        <br>
-
-        <button type="submit">Alta doctor</button>                
+        <br><button type="submit">Alta doctor</button>                
 
     </form>
 
-        <br>
-        <br>
-        <br>
 
-
+    <h2>Alta de paciente</h2>
 
     <!-- alta del paciente -->
     <form action="gestionar_citas.php" method="post">
@@ -55,18 +50,15 @@
             <option value="Traumatología">Traumatología</option>
         </select><br><br>
 
+        <!-- Campo para el doctor asignado (Nº de Licencia) -->
+        <label for="doctor_asignado">Nº Licencia del Doctor Asignado</label>
+        <input type="number" id="doctor_asignado" name="doctor_asignado" required><br>
+
         <!-- Campo para fecha y hora -->
-        <label for="fecha_hora">Fecha y Hora de la Cita:</label><br>
+        <br><label for="fecha_hora">Fecha y Hora de la Cita:</label><br>
         <input type="datetime-local" id="fecha_hora" name="fecha_hora" required>
         <br><br>
         <button type="submit">Reservar Cita</button>
-        
-        
-        <!-- Doctor que atenderá -->
-        <label for="n_licencia">Doctor asignado:</label><br>
-        <input type="text" id="n_licencia" name="doctor_asignado">
-        <br><br>
-        <button type="submit">Reservar Cita</button> 
     </form>
 
 </body>

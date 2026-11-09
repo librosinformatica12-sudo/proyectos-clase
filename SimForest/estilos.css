@@ -12,7 +12,7 @@ html, body {
 
 /* Fondo y centrado principal */
 body {
-    background-image: url('foto-fondo.jpg'); /* renombra el archivo sin espacio */
+    background-image: url('foto\ fondo.jpg'); /* renombra el archivo sin espacio */
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
@@ -94,14 +94,14 @@ body {
 }
 
 /* Controles del simulador */
-#panel-controles {
+#barra_control {
     display: flex;
     justify-content: center;
     gap: 10px;
     margin-top: 15px;
 }
 
-#panel-controles button {
+#barra_control button {
     padding: 8px 16px;
     border-radius: 6px;
     border: none;
@@ -110,7 +110,7 @@ body {
     transition: transform 0.1s ease;
 }
 
-#panel-controles button:hover {
+#barra_control button:hover {
     transform: scale(1.05);
     background-color: #ffffff;
 }
@@ -130,6 +130,7 @@ body {
     background-color: rgba(0, 0, 0, 0.5);
     padding: 4px;
     border-radius: 6px;
+    font-size: 24px;
 }
 
 .fila {
@@ -137,15 +138,15 @@ body {
 }
 
 .celda {
-    width: 20px;
-    height: 20px;
+    width: 50px;
+    height: 50px;
     flex-shrink: 0;           /* evita que las celdas se aplasten */
     border: 1px solid rgba(0, 0, 0, 0.25);
     box-sizing: border-box;
 }
 
 /* Estados (4, como en el JS) */
-.infertil { background-color: #864141; }
-.fertil   { background-color: #c9b27c; }
-.arbol    { background-color: #2e8b57; }
-.fuego    { background-color: #ff4500; }
+.infertil { background-color: #8D5555; }
+.fertil   { background-color: #D8C393; }
+.arbol    { background-color: #3A9D6A; }
+.fuego    { background-color: #FF5722; }

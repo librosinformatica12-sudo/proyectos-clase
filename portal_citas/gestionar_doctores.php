@@ -2,7 +2,6 @@
 
 require_once __DIR__ . "/AccesoDatos.php";
 
-
 // PASO A: Iniciar o reanudar la sesión (OBLIGATORIO al principio)
 session_start();
 
@@ -18,7 +17,7 @@ if (!isset($_SESSION["lista_doctores"])) {
             $nuevo_doctor = [];
             $nuevo_doctor["licencia_doctor"] = $doctor["id"];
             $nuevo_doctor["nombre_doctor"] = $doctor["nombre"];
-            $nuevo_doctor["apellido_doctor"] = $doctor["apellido"];
+            $nuevo_doctor["apellido_doctor"] = $doctor["apellidos"]; // ✅ Corregido a 'apellidos' (plural)
 
             $_SESSION["lista_doctores"][] = $nuevo_doctor;
         }
@@ -31,38 +30,54 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // 1. Capturamos los datos que viajan en el POST
     if (isset($_POST["licencia_doctor"], $_POST["nombre_doctor"], $_POST["apellido_doctor"])) {
 
-        // 2. primero llamamos a la base de datos / función y guardamos el resultado
-        $resultado = pa_altadoctor(
-            $_POST["licencia_doctor"],
-            $_POST["nombre_doctor"],
-            $_POST["apellido_doctor"]
-        );
+        $licencia = trim($_POST["licencia_doctor"]);
+        $nombre = trim($_POST["nombre_doctor"]);
+        $apellido = trim($_POST["apellido_doctor"]);
 
-        // 3. evaluamos el código que nos devolvió el resultado
-        if ($resultado === -1) {
-            $mensaje = "nombre vacio.";
-        } 
-        else if ($resultado === -2) {
-            $mensaje = "apellido vacio.";
-        } 
-        else if ($resultado === -3) {
-            $mensaje = "licencia vacia.";
-        } 
+        // 2. Validamos cada campo del formulario antes de tocar la base de datos
+        if ($licencia === "") {
+            $mensaje = "Licencia vacía.";
+        }
+        else if (!ctype_digit($licencia)) {
+            $mensaje = "Licencia inválida: debe ser numérica.";
+        }
+        else if ($nombre === "") {
+            $mensaje = "Nombre vacío.";
+        }
+        else if ($apellido === "") {
+            $mensaje = "Apellido vacío.";
+        }
         else {
-            // 4. si todo está bien (no entró en ningún error), 
-            // acumulamos el doctor en la sesión y ponemos el mensaje de éxito
-            $nuevo_doctor = [
-                "licencia_doctor" => $_POST["licencia_doctor"],
-                "nombre_doctor" => $_POST["nombre_doctor"],
-                "apellido_doctor" => $_POST["apellido_doctor"]
-            ];
-            $_SESSION["lista_doctores"][] = $nuevo_doctor;
+            // 3. Llamamos a la base de datos / función y guardamos el resultado
+            $resultado = PA_AltaDoctor($licencia, $nombre, $apellido);
 
-            $mensaje = "doctor dado de alta correctamente.";
+            // 4. Evaluamos el código que nos devolvió el resultado
+            if ($resultado === -1) {
+                $mensaje = "Nombre vacío.";
+            } 
+            else if ($resultado === -2) {
+                $mensaje = "Apellido vacío.";
+            } 
+            else if ($resultado === -3) {
+                $mensaje = "Licencia vacía.";
+            } 
+            else if ($resultado === -4) {
+                $mensaje = "Licencia duplicada.";
+            } 
+            else {
+                // 5. Si todo está bien, acumulamos el doctor en la sesión
+                $nuevo_doctor = [
+                    "licencia_doctor" => $licencia,
+                    "nombre_doctor" => $nombre,
+                    "apellido_doctor" => $apellido
+                ];
+                $_SESSION["lista_doctores"][] = $nuevo_doctor;
+
+                $mensaje = "Doctor dado de alta correctamente.";
+            }
         }
     }
 }
-
 
 ?>
 
@@ -82,7 +97,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <h3>Doctores dados de alta (Total: <?php echo count($_SESSION['lista_doctores']); ?>)</h3>
 
-    <!-- PASO E: Renderizar la tabla si existen citas guardadas -->
+    <!-- PASO E: Renderizar la tabla si existen doctores guardados -->
     <?php if (!empty($_SESSION['lista_doctores'])): ?>
         <table border="1" cellpadding="8" cellspacing="0">
             <thead>
@@ -95,22 +110,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <tbody>
                 <?php foreach ($_SESSION['lista_doctores'] as $indice => $doctor): ?>
                     <tr>
-                        <td><?php echo $doctor["licencia_doctor"]; ?></td>
-                        <td><?php echo $doctor["nombre_doctor"]; ?></td>
-                        <td><?php echo $doctor["apellido_doctor"]; ?></td>
+                        <td><?php echo htmlspecialchars($doctor["licencia_doctor"]); ?></td>
+                        <td><?php echo htmlspecialchars($doctor["nombre_doctor"]); ?></td>
+                        <td><?php echo htmlspecialchars($doctor["apellido_doctor"]); ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
         <br>
-
-
     <?php else: ?>
         <p>No hay doctores actualmente.</p>
     <?php endif; ?>
 
     <br><hr>
-    <a href="portal_citas.html"> +Volver al portal</a>
+    <a href="portal_citas.html"> + Volver al portal</a>
 
 </body>
 </html>
