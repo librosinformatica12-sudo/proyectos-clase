@@ -1,3 +1,19 @@
+-- ============================================================
+-- script-citas.sql (portal_citas - versión antigua)
+--
+-- OJO: este script es antiguo y tiene errores de nombres/sintaxis.
+-- El script bueno y comentado está en:
+--   portal_citasV2/generador_clinia.sql
+--
+-- ÍNDICE RÁPIDO (Ctrl+F):
+--   TABLAS
+--   PROCEDURE AltaDoctor
+--   PROCEDURE ListaDoctores
+--   PROCEDURE DameDoctor
+--   PROCEDURE AltaCita
+--   PROCEDURE ModificarCita
+-- ============================================================
+
 -- SCRIPT DE GENERACION DE BBDD EN MYSQL
 create database if not exists Clinica;
 use Clinica;
@@ -7,7 +23,8 @@ use Clinica;
 drop table if exists citasMedicas;
 drop table if exists doctores;
 
--- tablas
+-- ===== TABLAS =====
+-- Tabla padre: doctores.
 create table doctores(
 	n_licencia int primary key,
     nombre_doctor varchar(50) not null,
@@ -16,6 +33,7 @@ create table doctores(
 );
 
 
+-- Tabla hija: citas. Aquí está el error "citasMedias" (debería ser citasMedicas).
 create table citasMedias(
 	id_cita int primary key auto_increment,
     nombre_paciente varchar(50) not null,
@@ -31,6 +49,8 @@ create table citasMedias(
 -- Procedure borrar
 drop procedure AltaCita;
 
+-- ===== PROCEDURE AltaDoctor =====
+-- Casos: -1 nombre vacío, -2 apellido vacío, -3 licencia duplicada, 0 correcto.
 delimiter //
 
 create procedure AltaDoctor (
@@ -66,6 +86,8 @@ delimiter ;
 
 
 
+-- ===== PROCEDURE ListaDoctores =====
+-- Devuelve todos los doctores. Ojo: más abajo hay otro listadoctores duplicado.
 DELIMITER //
 
 CREATE PROCEDURE ListaDoctores ()
@@ -88,6 +110,8 @@ end //
 
 delimiter ;
 
+-- ===== PROCEDURE DameDoctor =====
+-- Busca un doctor por su licencia.
 delimiter //
 
 create procedure damedoctor (in _n_licencia int)
@@ -101,7 +125,9 @@ delimiter ;
 
 
 
--- Procedure crear
+-- ===== PROCEDURE AltaCita =====
+-- Casos: -1 nombre, -2 especialidad, -3 fecha vacía, -4 fecha pasada, 0 correcto.
+-- Ojo: la definición "in fk_doctor on _res int" es incorrecta; falta OUT _res.
 delimiter //
 create procedure AltaCita (in _nombre_paciente  varchar(50), in _especialidad varchar(20), in _fecha datetime, in fk_doctor on _res int)
 
@@ -133,6 +159,9 @@ delimiter ;
 
 
 
+-- ===== PROCEDURE ModificarCita =====
+-- Actualiza una cita existente. Ojo: el WHERE usa id_cita = id_cita
+-- (se compara consigo mismo); debería usar el parámetro de entrada.
 delimiter //
 create procedure ModificarCita (in id_cita int, _nombre_paciente  varchar(50), in _especialidad varchar(20), in _fecha datetime, in fk_doctor on _res int)
 

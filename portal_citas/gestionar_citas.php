@@ -1,8 +1,28 @@
 <?php
 
+/*
+ * gestionar_citas.php (portal_citas - versión antigua)
+ *
+ * ÍNDICE RÁPIDO (Ctrl+F):
+ *   SESION
+ *   SINCRONIZAR LISTA
+ *   BUSCAR CITA POR ID
+ *   BORRAR CITA
+ *   MOSTRAR ZONA EDICION
+ *   ACTUALIZAR CITA
+ *   ALTA DE CITA
+ *   RENDER TABLA
+ *   RENDER FORM EDITAR
+ *
+ * OJO: esta versión antigua llama a PA_ListaCitas() y PA_ActualizarCita(),
+ * que no están definidas en este AccesoDatos.php. La versión completa está
+ * en portal_citasV2.
+ */
+
 require_once __DIR__ . "/AccesoDatos.php";
 
-// PASO A: Iniciar o reanudar la sesión
+// ===== SESION =====
+// PASO A: Iniciar o reanudar la sesión.
 session_start();
 
 // PASO B: Inicializar los datos de sesión
@@ -16,6 +36,7 @@ if (!isset($_SESSION["cita_editando"])) {
 $mensaje = "";
 $mensajeOk = true;
 
+// BUSCAR CITA POR ID: recorre el array de la sesión hasta encontrar la cita.
 function buscarCitaPorId(array $citas, $idCita)
 {
     foreach ($citas as $cita) {
@@ -26,7 +47,8 @@ function buscarCitaPorId(array $citas, $idCita)
     return null;
 }
 
-// Sincronizamos la sesión con la base de datos (así también obtenemos el id_cita)
+// SINCRONIZAR LISTA: se lee la base de datos y se guarda en la sesión.
+// Así la tabla y los botones trabajan con los mismos datos.
 $_SESSION["lista_citas"] = PA_ListaCitas();
 
 $accion = isset($_POST["accion"]) ? $_POST["accion"] : "";
@@ -97,6 +119,7 @@ elseif ($accion === "actualizar_cita") {
         $mensaje = "Fecha no válida.";
         $mensajeOk = false;
     } else {
+        // ACTUALIZAR CITA: se manda la nueva fecha a la base de datos.
         $resultado = PA_ActualizarCita(
             (string)$idCita,
             $citaActual["paciente"],
@@ -162,6 +185,7 @@ elseif (
     } else {
         $doctor_id = (int)$doctorPost;
 
+        // ALTA DE CITA: se inserta en MySQL mediante el procedure AltaCita.
         $resultado = PA_AltaCita($paciente, $especialidad, $fecha->format("Y-m-d H:i:s"), $doctor_id);
 
         if ($resultado === -1) {
@@ -207,12 +231,14 @@ if ($_SESSION["cita_editando"] !== null) {
 
     <h2>Gestión de Citas Médicas</h2>
 
+    <!-- ===== RENDER: MENSAJE DE RESULTADO ===== -->
     <?php if ($mensaje !== ""): ?>
         <p style="color: <?php echo $mensajeOk ? "green" : "red"; ?>; font-weight: bold;">
             <?php echo htmlspecialchars($mensaje); ?>
         </p>
     <?php endif; ?>
 
+    <!-- ===== RENDER: TABLA DE CITAS ===== -->
     <h3>Citas Registradas (Total: <?php echo count($_SESSION['lista_citas']); ?>)</h3>
 
     <?php if (!empty($_SESSION['lista_citas'])): ?>
@@ -259,6 +285,7 @@ if ($_SESSION["cita_editando"] !== null) {
         </form>
     <?php endif; ?>
 
+    <!-- ===== RENDER: FORM EDITAR HORA ===== -->
     <?php if ($citaEditando !== null): ?>
         <hr>
         <h3>Modificar la hora de la cita #<?php echo htmlspecialchars($citaEditando["id_cita"]); ?></h3>

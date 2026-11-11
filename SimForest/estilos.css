@@ -1,4 +1,18 @@
-/* Reset básico */
+/* ============================================================
+   estilos.css (SimForest)
+   ÍNDICE RÁPIDO (Ctrl+F):
+     RESET
+     FONDO
+     CABECERA
+     PANEL CONFIGURADOR
+     BOTON INICIAR
+     BARRA DE CONTROL
+     TABLERO
+     CELDAS
+     ESTADOS
+   ============================================================ */
+
+/* ===== RESET ===== */
 * {
     box-sizing: border-box;
 }
@@ -10,6 +24,7 @@ html, body {
     font-family: Arial, sans-serif;
 }
 
+/* ===== FONDO ===== */
 /* Fondo y centrado principal */
 body {
     background-image: url('foto\ fondo.jpg'); /* renombra el archivo sin espacio */
@@ -27,6 +42,7 @@ body {
     padding: 20px;
 }
 
+/* ===== CABECERA ===== */
 /* Encabezado */
 #Bienvenidos {
     color: #ffffff;
@@ -40,6 +56,7 @@ body {
     font-size: 2.5rem;
 }
 
+/* ===== PANEL CONFIGURADOR ===== */
 /* Panel de configuración */
 #panel-configurador {
     background-color: rgba(0, 0, 0, 0.7);
@@ -75,6 +92,7 @@ body {
     font-size: 0.95rem;
 }
 
+/* ===== BOTON INICIAR ===== */
 /* Botón Iniciar */
 #btn_tabla {
     margin-top: 15px;
@@ -93,6 +111,7 @@ body {
     background-color: #246b43;
 }
 
+/* ===== BARRA DE CONTROL ===== */
 /* Controles del simulador */
 #barra_control {
     display: flex;
@@ -115,6 +134,7 @@ body {
     background-color: #ffffff;
 }
 
+/* ===== TABLERO ===== */
 /* ---------- TABLERO (div) ---------- */
 #tablero {
     display: flex;
@@ -145,7 +165,8 @@ body {
     box-sizing: border-box;
 }
 
-/* Estados (4, como en el JS) */
+/* ===== ESTADOS ===== */
+/* Estados (4, como en el JS): infertil, fertil, arbol, fuego. */
 .infertil { background-color: #8D5555; }
 .fertil   { background-color: #D8C393; }
 .arbol    { background-color: #3A9D6A; }

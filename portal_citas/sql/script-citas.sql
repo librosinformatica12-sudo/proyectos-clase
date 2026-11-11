@@ -1,10 +1,23 @@
+-- ============================================================
+-- script-citas.sql (portal_citas/sql - versión antigua)
+--
+-- OJO: este script está incompleto y tiene errores de sintaxis.
+-- El script bueno y comentado está en:
+--   portal_citasV2/generador_clinia.sql
+--
+-- ÍNDICE RÁPIDO (Ctrl+F):
+--   TABLA citasMedias
+--   PROCEDURE AltaCita
+-- ============================================================
+
 -- SCRIPT DE GENERACION DE BBDD EN MYSQL
 create database if not exists Clinica;
 use Clinica;
 -- drops
 drop table if exists citasMedicas;
 
--- tablas
+-- ===== TABLA citasMedias =====
+-- Ojo: el nombre correcto sería citasMedicas (falta la c).
 create table citasMedias(
 	id_cita int primary key auto_increment,
     nombre_paciente varchar(50) not null,
@@ -16,7 +29,9 @@ create table citasMedias(
 -- Procedure borrar
 drop procedure AltaCita;
 
--- Procedure crear
+-- ===== PROCEDURE AltaCita =====
+-- Casos: -1 nombre, -2 especialidad, -3 fecha vacía, -4 fecha pasada, 0 correcto.
+-- Ojo: la definición "on _res int" es incorrecta; falta OUT.
 delimiter //
 create procedure AltaCita (in _nombre_paciente  varchar(50), in _especialidad varchar(20), in _fecha datetime, on _res int)
 

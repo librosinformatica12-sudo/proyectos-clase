@@ -1,14 +1,30 @@
 <?php
 
+/*
+ * gestionar_doctores.php (portal_citas - versión antigua)
+ *
+ * ÍNDICE RÁPIDO (Ctrl+F):
+ *   SESION
+ *   CARGAR DOCTORES DE LA BD
+ *   CAPTURAR POST
+ *   VALIDAR CAMPOS
+ *   LLAMAR PA_AltaDoctor
+ *   CODIGOS DE RESULTADO
+ *   GUARDAR EN SESION
+ *   RENDER TABLA
+ */
+
 require_once __DIR__ . "/AccesoDatos.php";
 
-// PASO A: Iniciar o reanudar la sesión (OBLIGATORIO al principio)
+// ===== SESION =====
+// PASO A: Iniciar o reanudar la sesión (OBLIGATORIO al principio).
 session_start();
 
 // PASO B: Inicializar el array de doctores 'lista_doctores' en la sesión si no existe aún
 if (!isset($_SESSION["lista_doctores"])) {
     $_SESSION["lista_doctores"] = array();
 
+    // CARGAR DOCTORES DE LA BD: se leen al entrar por primera vez.
     $doctoresExistentes = PA_ListaDoctores();
 
     if (is_array($doctoresExistentes)) {
@@ -27,6 +43,7 @@ if (!isset($_SESSION["lista_doctores"])) {
 // PASO D: Si se recibe una nueva alta de doctor se procesa
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
+    // CAPTURAR POST: los name del formulario son los índices de $_POST.
     // 1. Capturamos los datos que viajan en el POST
     if (isset($_POST["licencia_doctor"], $_POST["nombre_doctor"], $_POST["apellido_doctor"])) {
 
@@ -34,6 +51,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $nombre = trim($_POST["nombre_doctor"]);
         $apellido = trim($_POST["apellido_doctor"]);
 
+        // VALIDAR CAMPOS: primero en PHP, antes de llamar a MySQL.
         // 2. Validamos cada campo del formulario antes de tocar la base de datos
         if ($licencia === "") {
             $mensaje = "Licencia vacía.";
@@ -48,9 +66,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $mensaje = "Apellido vacío.";
         }
         else {
+            // LLAMAR PA_AltaDoctor: la función prepara el CALL y devuelve el OUT.
             // 3. Llamamos a la base de datos / función y guardamos el resultado
             $resultado = PA_AltaDoctor($licencia, $nombre, $apellido);
 
+            // CODIGOS DE RESULTADO: 0 bien; negativos = error del procedure.
             // 4. Evaluamos el código que nos devolvió el resultado
             if ($resultado === -1) {
                 $mensaje = "Nombre vacío.";
@@ -65,6 +85,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $mensaje = "Licencia duplicada.";
             } 
             else {
+                // GUARDAR EN SESION: si el alta fue bien, se añade a la tabla.
                 // 5. Si todo está bien, acumulamos el doctor en la sesión
                 $nuevo_doctor = [
                     "licencia_doctor" => $licencia,
@@ -97,6 +118,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <h3>Doctores dados de alta (Total: <?php echo count($_SESSION['lista_doctores']); ?>)</h3>
 
+    <!-- ===== RENDER TABLA: recorre la sesión y pinta una fila por doctor ===== -->
     <!-- PASO E: Renderizar la tabla si existen doctores guardados -->
     <?php if (!empty($_SESSION['lista_doctores'])): ?>
         <table border="1" cellpadding="8" cellspacing="0">

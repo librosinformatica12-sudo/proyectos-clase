@@ -6,10 +6,20 @@
 </head>
 <body>
 
+    <!--
+      ÍNDICE RÁPIDO (Ctrl+F):
+        FORM ALTA DOCTOR
+        FORM ALTA PACIENTE
+        CAMPOS DEL DOCTOR
+        CAMPOS DE LA CITA
+    -->
+
     <h2>Solicitud de Cita Médica</h2>
 
 
+    <!-- ===== FORM ALTA DOCTOR ===== -->
     <h2>Alta de doctor</h2>
+    <!-- action: página PHP que procesa el formulario. method: post para no enviar datos por la URL. -->
     <form action="gestionar_doctores.php" method="post">
         <!-- Nª Licencia de doctor -->
         <label for="licencia_doctor">Nª Licencia:</label>
@@ -32,11 +42,13 @@
     </form>
 
 
+    <!-- ===== FORM ALTA PACIENTE ===== -->
     <h2>Alta de paciente</h2>
 
-    <!-- alta del paciente -->
+    <!-- alta del paciente: los name son los índices que llegan a $_POST en PHP -->
     <form action="gestionar_citas.php" method="post">
-        <!-- Campo para el nombre del paciente -->
+        <!-- ===== CAMPOS DE LA CITA ===== -->
+        <!-- Campo para el nombre del paciente (name="paciente" -> $_POST["paciente"]) -->
         <label for="paciente">Nombre del Paciente:</label><br>
         <input type="text" id="paciente" name="paciente" required><br><br>
 
@@ -58,6 +70,7 @@
         <br><label for="fecha_hora">Fecha y Hora de la Cita:</label><br>
         <input type="datetime-local" id="fecha_hora" name="fecha_hora" required>
         <br><br>
+        <!-- submit envía el formulario a gestionar_citas.php -->
         <button type="submit">Reservar Cita</button>
     </form>
 

@@ -7,6 +7,19 @@
     <link rel="stylesheet" href="estilos.css">
     <script src="script/script.js" defer></script></head>
 <body>
+    <!--
+      ÍNDICE RÁPIDO (Ctrl+F):
+        CABECERA
+        PANEL SIMULADOR
+        TABLERO
+        BARRA DE CONTROL
+        PANEL ESTADISTICAS
+        PANEL CONFIGURADOR
+        CONTROLES DEL BOSQUE
+        PROBABILIDADES
+    -->
+
+    <!-- ===== CABECERA ===== -->
     <div id="cabezera">
         <div id="Bienvenidos">
 
@@ -15,11 +28,14 @@
 
         </div>
 
+        <!-- ===== PANEL SIMULADOR ===== -->
         <div id="panel-simulador">
+            <!-- TABLERO: aquí JavaScript crea la tabla del bosque. -->
             <div id="tablero">
                 
             </div>
 
+            <!-- BARRA DE CONTROL: botones de avance, pausa y velocidad. -->
             <div id="barra_control">
                 <button id="btn-avanzar1" title="Avanzar 1 iteracion">Avanzar</button>
                 <button id="btn-atrasar" title="Mas lento">&#9664;</button>
@@ -28,6 +44,7 @@
                 <button id="btn-adelantar" title="Mas rapido">&#9193;</button>
             </div>
 
+            <!-- PANEL ESTADISTICAS: JavaScript escribe aquí los contadores. -->
             <div id="panel_estadisticas">
 
             </div>
@@ -35,9 +52,12 @@
         
     </div>
 
+    <!-- ===== PANEL CONFIGURADOR ===== -->
     <div id="panel-configurador">
         <h2>Configuracion</h2>
 
+        <!-- ===== CONTROLES DEL BOSQUE ===== -->
+        <!-- M = número de columnas; N = número de filas. -->
         <span>Anchura del bosque M:</span>
         <div> 
             <input type="number" id="spin_anchura_bosque" min="1" max="30" value="5"
@@ -50,6 +70,8 @@
             placeholder="N (Altura del bosque)">
         </div>
         <br>
+        <!-- ===== PROBABILIDADES ===== -->
+        <!-- P = probabilidad de que nazca un árbol; Q = probabilidad de incendio. -->
         <span>Probabilidad de nacimiento de árbol</span>
         <div>
             <input type="number" id="spin_probabilidad_arbol" min="0" max="1" step="0.01" value="0.5"
